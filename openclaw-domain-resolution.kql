@@ -1,0 +1,20 @@
+/*
+ * Title: OpenClaw Domain Resolution
+ * Author: Emil Stahl / team.blue
+ * Date: 2026-02-24
+ * Description: Detects DNS lookups to known OpenClaw/Moltbot/Clawdbot infrastructure domains. Note: will fire on users browsing these domains directly. Exclude known mail/DNS resolver processes to reduce noise.
+ * MITRE ATT&CK: T1071.004, T1568
+ * References: https://www.sentinelone.com/blog/how-sentinelone-secures-the-ai-tools-that-act-like-users/
+ */
+NOT (
+  src.process.displayName in:anycase (
+    "perl","surgemail","named","smtpd","MailService",
+    "pdns_recursor","unbound","systemd-resolved",
+    "MailEnable SMTP Connector","opendkim"
+  )
+) AND
+event.dns.request contains:anycase (
+  "clawhub.ai","openclaw.ai","open-claw.me",
+  "molt.bot","openclaw.bot","onlycrabs.ai",
+  "moltbook.com","thecolony.cc"
+)

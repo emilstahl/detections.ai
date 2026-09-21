@@ -1,0 +1,17 @@
+/*
+ * Title: OpenClaw Install Script Execution
+ * Author: Emil Stahl / team.blue
+ * Date: 2026-02-24
+ * Description: Detects execution of OpenClaw or Clawdbot install scripts via curl, wget, bash, npm and similar interpreters. Covers both shell and PowerShell install paths.
+ * MITRE ATT&CK: T1059.004, T1059.001, T1059.006
+ * References: https://www.sentinelone.com/blog/how-sentinelone-secures-the-ai-tools-that-act-like-users/
+ */
+dataSource.name = "SentinelOne" AND
+src.process.name in ("curl","wget","bash","sh","zsh","pwsh","powershell","node","npm") AND
+(
+  any(osSrc.process.cmdline, src.process.cmdline, tgt.process.cmdline) contains:anycase "openclaw.ai/install.sh" OR
+  any(osSrc.process.cmdline, src.process.cmdline, tgt.process.cmdline) contains:anycase "clawd.bot/install.sh" OR
+  any(osSrc.process.cmdline, src.process.cmdline, tgt.process.cmdline) contains:anycase "clawd.bot/install-cli.sh" OR
+  any(osSrc.process.cmdline, src.process.cmdline, tgt.process.cmdline) contains:anycase "clawd.bot/install.ps1" OR
+  any(osSrc.process.cmdline, src.process.cmdline, tgt.process.cmdline) contains:anycase "npm install -g openclaw"
+)

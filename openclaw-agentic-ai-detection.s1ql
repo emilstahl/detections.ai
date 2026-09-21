@@ -1,0 +1,9 @@
+/*
+ * Title: OpenClaw Agentic AI Detection
+ * Author: detections.ai
+ * Date: 2026-02-24
+ * Description: Detects activity related to OpenClaw (aka Clawdbot or Moltbot) by searching for specific process command line strings, file path keywords, network listeners on port 18789, or scheduled tasks named 'OpenClaw'.
+ * MITRE ATT&CK: T1059.003, T1053.005, T1071.001
+ * References: https://www.sentinelone.com/blog/how-sentinelone-secures-the-ai-tools-that-act-like-users/
+ */
+dataSource.name = 'SentinelOne' AND (event.type = 'Process Creation' AND tgt.process.cmdline contains:anycase ('clawdbot','moltbot','openclaw')) OR (tgt.file.path contains 'openclaw' or tgt.file.path contains 'clawdbot') OR (src.port.number = 18789 or dst.port.number = 18789) OR (task.name contains 'OpenClaw')
